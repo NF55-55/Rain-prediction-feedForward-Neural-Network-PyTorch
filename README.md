@@ -3,7 +3,7 @@ A simple Feedforward Neural Network (PyTorch) trained on 1950-2025 weather data 
 ## Brief description of the repo
 -[NNmodel.pth](/NNmodel.pth): PyTorch NN model saved at the end of training.\
 -[NNmodelTraining.py](/NNmodelTraining.py): python code to train the feed forward NN.\
--[NNtesting.py](/NNtesting.py): python code to test the NN on the testing dataset, compute the accuracy and test with user-provided weather data to predict the current chance of raining.\
+-[NNtesting.py](/NNtesting.py): python code to test the NN with the testing dataset, compute the accuracy and predict the current chance of raining based on user-provided weather data.\
 -[inputCurrentWeatherData.csv](/inputCurrentWeatherData.csv): csv file in which the user should insert the current weather data to test/use the NN.\
 -[meanAndStdInput.txt](/meanAndStdInput.txt): txt file in which are saved some statistics used to normalize the input, to use during testing.\
 -[testData.txt](/testData.txt): testing dataset (15% of the dataset).\
