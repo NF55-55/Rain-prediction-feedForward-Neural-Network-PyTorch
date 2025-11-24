@@ -73,29 +73,29 @@ dataset = torch.cat((dewT.unsqueeze(1), T2m.unsqueeze(1), uWind.unsqueeze(1), vW
 # normalizing the inputs so that they have the same weight on the output
 print(f"Mean of dataset: {dataset.mean(dim=0)}\n")
 print(f"Standard dev. of dataset: {dataset.std(dim=0)}\n")
-with open("./meanAndStdInput.txt", "w") as f: # saving them for the testing
+with open("./meanAndStdInput.txt", "w") as f:
     f.write(f"{dataset.mean(dim=0)[0]},{dataset.mean(dim=0)[1]},{dataset.mean(dim=0)[2]},{dataset.mean(dim=0)[3]},"
             f"{dataset.mean(dim=0)[4]},{dataset.mean(dim=0)[5]}\n")
     f.write(f"{dataset.std(dim=0)[0]},{dataset.std(dim=0)[1]},{dataset.std(dim=0)[2]},{dataset.std(dim=0)[3]},"
             f"{dataset.std(dim=0)[4]},{dataset.std(dim=0)[5]}")
 dataset = (dataset - dataset.mean(dim=0)) / dataset.std(dim=0)
 
-print(dataset.shape)
+print(dataset.shape) 
 
 expOut = torch.zeros(hourlyPrecm.shape[0], dtype=torch.float32) # expected output (0=no rain, 1=rain) initialized to "no rain"
 
 for i in range(hourlyPrecm.shape[0]):
     if hourlyPrecm[i] >= 0.0005: # 0.0005 m or 0.5 mm of rain per hour is the lower bound of "light rain" definition
-        expOut[i] = 1 # (100% rain)
-    if hourlyPrecm[i] >= 0.0001 and hourlyPrecm[i] < 0.0005: # between 0.1 mm/h and 0.5 mm/h still considering it drizzle
-        expOut[i] = 0.75 # (75% chance of rain)
+        expOut[i] = 1
+    if hourlyPrecm[i] >= 0.0001 and hourlyPrecm[i] < 0.0005: # between 0.1 mm/h and 0.5 mm/h still consider it slight rain (classif. = 0.8)
+        expOut[i] = 0.75
 
-# adding the expected output as last column of the dataset, so to shuffle it together
+# now add the expected output as last column of the dataset, so to shuffle it together
 dataset = torch.cat((dataset, expOut.unsqueeze(1)), dim=1)
 
 print(dataset.shape)
 
-# shuffle randomly the dataset (no time dependency in the training, so to avoid training only on old or new data, but both)
+# shuffle randomly the dataset (no time dependency in the training, train with many different years data)
 indices = torch.randperm(dataset.size(0))
 dataset = dataset[indices] # shuffled dataset
 
@@ -125,19 +125,17 @@ def train_epoch(model, inpTrain, outTrain, criterion, optimizer, loss_logger, in
     # Calculate loss
     loss = criterion(output, outTrain)
 
-    # resetting previous gradient calculations
     optimizer.zero_grad()
 
     # Backprop loss
     loss.backward()
 
-    # Optimization step (change weights and biases)
+    # Optimization Step
     optimizer.step()
 
-    # training loss
     loss_logger.append(loss.item())
 
-    # validation step (to check if there's overfitting, so if the loss on validation dataset start to increase)
+    # validation step (to check if there's overfitting
     out_validation = model(inpValid)
     loss_validation = criterion(out_validation, outValid)
     loss_log_validation.append(loss_validation.item())
@@ -154,9 +152,6 @@ model.train()
 for i in trange(nEpochs, desc="Epoch", leave=False):
     train_loss, loss_log_validation = train_epoch(model, inpTrain, outTrain, criterion, optimizer, train_loss,
                                                                 inpValid, outValid, loss_log_validation)
-    if train_loss[-1] > 1e3:
-        print("\nTraining STOPPED due to divergence!\n")
-        break
 
 # saving model
 torch.save(model.state_dict(), 'NNmodel.pth') # saving the NN model (for later testing)
@@ -170,5 +165,4 @@ plt.grid(True)
 plt.xlabel("# of epochs")
 plt.ylabel("Loss function per epoch")
 plt.legend(["Training", "Validation"])
-
 plt.show()
