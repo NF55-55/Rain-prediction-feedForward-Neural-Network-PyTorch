@@ -43,9 +43,6 @@ class NNmodel(nn.Module):
 
     def __init__(self, layer1, input_siz=6, num_classes=1):
         super(NNmodel, self).__init__()
-        # We will use 4 linear layers
-        # The input to the model is 784 (28x28 - the image size, so we've just changed the shape of the image into a 1D tensor)
-        # and the output should be num_classes
         self.layer1 = nn.Linear(input_siz, layer1, bias=True)
         self.outpLayer = nn.Linear(layer1,num_classes, bias=True)
 
@@ -53,11 +50,6 @@ class NNmodel(nn.Module):
         self.ActFun2 = nn.Sigmoid()
 
     def forward(self, x):
-
-        # We will use a relu activation function for this network! (F.relu)
-        # NOTE F.relu is the "functional" version of the activation function!
-        # nn.ReLU is a class constructor of a "ReLU" object
-        # These two things are the same for MOST purposes!
         x = self.ActFun1(self.layer1(x))
         x = self.ActFun2(self.outpLayer(x))
         
@@ -178,4 +170,5 @@ plt.grid(True)
 plt.xlabel("# of epochs")
 plt.ylabel("Loss function per epoch")
 plt.legend(["Training", "Validation"])
+
 plt.show()
