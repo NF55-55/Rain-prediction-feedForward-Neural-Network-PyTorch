@@ -10,4 +10,5 @@ A simple Feedforward Neural Network (PyTorch) trained on 1950-2025 weather data 
 * [weatherData](/weatherData/): folder in which the weather data is stored.
 ## Weather Data
 In the [weatherData](/weatherData) folder you can find the link to the documentation of the 1950-2025 hourly weather data. This dataset can be imported for any specified location from [Copernicus Climate Data Store website](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land-timeseries). In my case I requested as weather variables: dewpoint temperature (2m), temperature (2m), u wind component (10m), v wind component (10m), surface pressure, skin temperature, de-accumulated total precipitation. The imported data is automatically splitted in multiple csv files, which I renamed and in this repo are mostly empty due to size limitation (the saved PyTorch NN available in this repo was actually trained on the full dataset).\
-The dataset is splitted in the following way in the code: training (70%), validating (15%), testing (15%). 
+The dataset is splitted in the following way in the code: training (70%), validating (15%), testing (15%). \
+I used 6 weather variables as inputs to the NN, 1 hidden layer of 30 nodes and 1 class at the output giving the chance of raining. The accuracy obtained on the testing dataset was 92.97%.
