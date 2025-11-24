@@ -90,7 +90,7 @@ print(f"u: {uWind} m/s, v: {vWind} m/s\n")
 
 pressure = currentWeatherData[4] # in Pa (windy)
 
-skinT = currentWeatherData[5] # in °C (find it here https://soiltemperature.app/results?lat=45.4429539&lng=11.9831493)
+skinT = currentWeatherData[5] # in °C (find it here https://soiltemperature.app/)
 skinT = skinT + 273.15 # converted in K
 
 currentData = torch.tensor((dewT, T2m, uWind, vWind, pressure, skinT), dtype=torch.float32)
