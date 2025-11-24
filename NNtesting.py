@@ -52,20 +52,19 @@ outTest = testData[:, -1].unsqueeze(1)
 
 nCorrect = 0
 outArray = []
-errThreshold = 0.25 # if the difference between output and expected output is lower than this value than it's counted as good prediction
 
 for i in range(inpTest.shape[0]):
     out = model(inpTest[i,:])
     out = out.detach().squeeze().item()
     outArray.append(out)
-    if abs(out-outTest[i,:].detach().squeeze().item())<errThreshold:
+    if abs(out-outTest[i,:].detach().squeeze().item())<0.5:
         nCorrect += 1
 
 accuracy = nCorrect/outTest.shape[0] * 100
 
-print(f"\nThe accuracy of this feedForward NN is: {round(accuracy,2)} % ({errThreshold*100} % threshold).\n")
+print(f"\nThe accuracy of this feedForward NN is: {round(accuracy,2)} %.\n")
 
-# test on user-provided data
+# test on given data
 
 statistics = np.loadtxt("./meanAndStdInput.txt", delimiter=",", dtype=np.float32)
 
@@ -74,7 +73,6 @@ statistics = torch.tensor(statistics, dtype=torch.float32)
 mean = statistics[0,:]
 std = statistics[1,:]
 
-# fill the following csv file using the links below
 currentWeatherData = np.loadtxt("./inputCurrentWeatherData.csv", skiprows=1, delimiter=",", dtype=np.float32)
 
 dewT = currentWeatherData[0] # dew temperature in °C (windy: https://www.windy.com/)
@@ -85,14 +83,14 @@ T2m = T2m + 273.15 # converted in K
 
 windMag = currentWeatherData[2] # magnitude of wind speed [m/s] (windy, closest weather station)
 windDir = currentWeatherData[3] # direction of wind in ° FROM NORTH (windy, closest weather station)
-windDir = -(windDir-90-180)/180*np.pi # direction of wind in rad and starting from east and following the wind dir. convention
+windDir = -(windDir-90-180)/180*np.pi # direction of wind in rad and starting from x-axis(east) and following the wind dir. convention
 uWind = -windMag*np.cos(windDir) # east-west component of wind at 10 m above ground [m/s]
 vWind = windMag*np.sin(windDir) # south-north component of wind at 10 m above ground [m/s]
 print(f"u: {uWind} m/s, v: {vWind} m/s\n")
 
 pressure = currentWeatherData[4] # in Pa (windy)
 
-skinT = currentWeatherData[5] # in °C (find it here https://soiltemperature.app/)
+skinT = currentWeatherData[5] # in °C (find it here https://soiltemperature.app/results?lat=45.4429539&lng=11.9831493)
 skinT = skinT + 273.15 # converted in K
 
 currentData = torch.tensor((dewT, T2m, uWind, vWind, pressure, skinT), dtype=torch.float32)
