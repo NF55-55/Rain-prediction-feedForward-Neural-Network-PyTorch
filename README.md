@@ -1,5 +1,5 @@
 # Chance of raining predicted with a feed forward Neural Network
-A simple Feedforward Neural Network (PyTorch) trained on 1950-2025 weather data (at the user-chosen location) used to predict the chance of raining based on user-provided current weather data (e.g.: [windy.com](https://www.windy.com/)).
+A simple Feedforward Neural Network (PyTorch) trained on 1950-2025 weather data (at the user-chosen location) used to predict the chance of raining based on live measurements (pressure, temperature, ...) obtained from open-meteo API.
 ## Brief description of the repo
 ### Main files for usage:
 * [predictWeather.py](/predictWeather.py): it feeds the NN with the current weather data at the specified location (see [apiUrl.txt](/apiUrl.txt)), got from an API call to open-meteo.com, yielding the live chance of raining.
