@@ -1,0 +1,1 @@
+put here the API url from open-meteo.com
